@@ -48,7 +48,7 @@ for(l=0;l<a.rows-1;l++)
 		{
 		    temp.x=l;
 		    temp.y=m;
-		    new_node=Node1(temp.x,temp.y,count+1);
+		    new_node=Node1(temp.x,temp.y,count+1,0);
 		    //cout<<count<<endl;
 		    //cout<<"aa"<<new_node.color_code<<endl;
 		    main_q.push(new_node);
@@ -78,7 +78,7 @@ void bfs(Mat a,Mat b,int i,int j,int count)
 				b.at<uchar>(i,j+1)=0;
 				temp.x=i;
 			    temp.y=j+1;
-				new_node=Node1(temp.x,temp.y,count+1);
+				new_node=Node1(temp.x,temp.y,count+1,0);
 				//cout<<"aa"<<new_node.color_code<<endl;
 				main_q.push(new_node);
 				myq.push(temp);
@@ -89,7 +89,7 @@ void bfs(Mat a,Mat b,int i,int j,int count)
 				b.at<uchar>(i+1,j)=0;
 				temp.x=i+1;
 			    temp.y=j;
-				new_node=Node1(temp.x,temp.y,count+1);
+				new_node=Node1(temp.x,temp.y,count+1,0);
 				//cout<<"aa"<<new_node.color_code<<endl;
 				main_q.push(new_node);
 				myq.push(temp);	
@@ -99,7 +99,7 @@ void bfs(Mat a,Mat b,int i,int j,int count)
 				b.at<uchar>(i,j-1)=0;
 				temp.x=i;
 			    temp.y=j-1;
-				new_node=Node1(temp.x,temp.y,count+1);
+				new_node=Node1(temp.x,temp.y,count+1,0);
 				//cout<<"aa"<<new_node.color_code<<endl;
 				main_q.push(new_node);
 				myq.push(temp);   
@@ -109,7 +109,7 @@ void bfs(Mat a,Mat b,int i,int j,int count)
 				b.at<uchar>(i-1,j)=0;
 				temp.x=i-1;
 			    temp.y=j;
-				new_node=Node1(temp.x,temp.y,count+1);
+				new_node=Node1(temp.x,temp.y,count+1,0);
 				//cout<<"aa"<<new_node.color_code<<endl;
 				main_q.push(new_node);
 				myq.push(temp);

@@ -6,20 +6,18 @@
 #include<iostream>
 using namespace cv;
 using namespace std;
-
-
 #include<queue>
-
 
 int isvalid1(Mat a,int i, int j);
 
 Mat draw_main_bfs(Mat a, Mat outp)
 {
-	Node1 temp=Node1(0,0,0),new_node=Node1(0,0,0);
+	Node1 temp=Node1(0,0,0,0),new_node=Node1(0,0,0,0);
 	Mat b=a.clone();	
 	new_node=main_q.front();
 	int i,j;
-	Mat out=outp.clone();
+	Mat nearest_obs = outp.clone();
+	cost_image = outp.clone();
 	i=new_node.x;
 	j=new_node.y;
 
@@ -32,8 +30,12 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				b.at<uchar>(i,j+1)=255;
 				temp.x=i;
 			    temp.y=j+1;
-				temp=Node1(temp.x,temp.y,new_node.color_code);
-				out.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
+
+				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
+				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
+				else cost_image.at<uchar>(i,j) = 254;
+				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);
 
 			}
@@ -42,8 +44,11 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				b.at<uchar>(i+1,j)=255;
 				temp.x=i+1;
 			    temp.y=j;
-				temp=Node1(temp.x,temp.y,new_node.color_code);
-				out.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
+				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
+				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
+				else cost_image.at<uchar>(i,j) = 254;
+				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);	
 			}
 			if(isvalid1(a,i,j-1)&&b.at<uchar>(i,j-1)==0)
@@ -51,8 +56,12 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				b.at<uchar>(i,j-1)=255;
 				temp.x=i;
 			    temp.y=j-1;
-				temp=Node1(temp.x,temp.y,new_node.color_code);
-				out.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
+				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
+				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
+				else cost_image.at<uchar>(i,j) = 254;
+				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				
+				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);   
 			}
 			 if(isvalid1(a,i-1,j)&&b.at<uchar>(i-1,j)==0)
@@ -60,16 +69,21 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				b.at<uchar>(i-1,j)=255;
 				temp.x=i-1;
 			    temp.y=j;
-				temp=Node1(temp.x,temp.y,new_node.color_code);
-				out.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
+				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
+				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
+				else cost_image.at<uchar>(i,j) = 254;
+				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);
 			  }
 				main_q.pop();
 				if(!main_q.empty())	
-					{new_node=main_q.front();
-				i=new_node.x;j=new_node.y;}                                 //check
+					{
+						new_node=main_q.front();
+						i=new_node.x;j=new_node.y;
+					}                                 //check
 	}
-	return out;
+	return nearest_obs;
 
 }
 

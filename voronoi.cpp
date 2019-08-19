@@ -31,7 +31,7 @@ int main(int argv,char** argc)
 	
 	//To invert the image(comment this section if it is not required to be inverted i.e. if the obstacles are already black)
 //////////////////////////////////////////////////////////////////////////////////////////
-	/*
+	
 	Mat input_inverted=input.clone();
 	for(i=0;i<input_inverted.rows;i++)
 	{
@@ -43,7 +43,7 @@ int main(int argv,char** argc)
 				input.at<uchar>(i,j)=255;
 		}
 	}
-	*/
+	
 ///////////////////////////////////////////////////////////////////////////////////////////
 	
 	// To generate input image which consists of white pixels representing borders of the obstacle objects as input_border the original image
@@ -71,6 +71,7 @@ int main(int argv,char** argc)
 	imshow("Input",input);
 	imshow("Input with Borders",input_border);
 	imshow("Output",output);
+	imshow("cost_image",cost_image);
 	waitKey(0);
 
 	
