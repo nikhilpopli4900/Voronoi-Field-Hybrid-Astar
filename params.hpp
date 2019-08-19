@@ -28,6 +28,7 @@ Node1 new_node=Node1(0,0,0,0);
 Mat cost_image;
 Mat voronoi_cost_image;
 Mat voronoi_edges;
-
+int max_obs_dist = 250;
+int alpha = 250;
 
 #endif
