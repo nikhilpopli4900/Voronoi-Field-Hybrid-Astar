@@ -18,6 +18,7 @@ Mat draw_main_bfs(Mat a, Mat outp)
 	int i,j;
 	Mat nearest_obs = outp.clone();
 	cost_image = outp.clone();
+	voronoi_edges=Mat(a.rows,a.cols,CV_8UC1,Scalar(0));
 	i=new_node.x;
 	j=new_node.y;
 
@@ -32,12 +33,18 @@ Mat draw_main_bfs(Mat a, Mat outp)
 			    temp.y=j+1;
 
 				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
-				else cost_image.at<uchar>(i,j) = 254;
-				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				if(temp.cost<255) cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
+				else cost_image.at<uchar>(temp.x,temp.y) = 254;
+				//cout << (int)cost_image.at<uchar>(i,j)<<endl;
 				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);
 
+			}
+			else if(isvalid1(a,i,j+1)&&nearest_obs.at<uchar>(i,j+1)!=new_node.color_code*40&&a.at<uchar>(i,j+1)==0)
+			{
+				voronoi_edges.at<uchar>(i,j+1)=255;
+				Node1 tem=Node1(i,j+1,0,0);
+				main_q2.push(tem);
 			}
 			if (isvalid1(a,i+1,j)&&b.at<uchar>(i+1,j)==0)
 			{
@@ -45,11 +52,18 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				temp.x=i+1;
 			    temp.y=j;
 				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
-				else cost_image.at<uchar>(i,j) = 254;
-				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				if(temp.cost<255) cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
+				else cost_image.at<uchar>(temp.x,temp.y) = 254;
+				//cout << (int)cost_image.at<uchar>(i,j)<<endl;
 				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);	
+			}
+			else if(isvalid1(a,i+1,j)&&nearest_obs.at<uchar>(i+1,j)!=new_node.color_code*40&&a.at<uchar>(i+1,j)==0)
+			{
+				voronoi_edges.at<uchar>(i+1,j)=255;
+				Node1 tem=Node1(i+1,j,0,0);
+				main_q2.push(tem);
+			
 			}
 			if(isvalid1(a,i,j-1)&&b.at<uchar>(i,j-1)==0)
 			{
@@ -57,12 +71,19 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				temp.x=i;
 			    temp.y=j-1;
 				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
-				else cost_image.at<uchar>(i,j) = 254;
-				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				if(temp.cost<255) cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
+				else cost_image.at<uchar>(temp.x,temp.y) = 254;
+				//cout << (int)cost_image.at<uchar>(i,j)<<endl;
 				
 				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);   
+			}
+			else if(isvalid1(a,i,j-1)&&nearest_obs.at<uchar>(i,j-1)!=new_node.color_code*40&&a.at<uchar>(i,j-1)==0)
+			{
+				voronoi_edges.at<uchar>(i,j-1)=255;
+				Node1 tem=Node1(i,j-1,0,0);
+				main_q2.push(tem);
+			
 			}
 			 if(isvalid1(a,i-1,j)&&b.at<uchar>(i-1,j)==0)
 			  {
@@ -70,12 +91,20 @@ Mat draw_main_bfs(Mat a, Mat outp)
 				temp.x=i-1;
 			    temp.y=j;
 				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) cost_image.at<uchar>(i,j)=temp.cost;
-				else cost_image.at<uchar>(i,j) = 254;
-				cout << (int)cost_image.at<uchar>(i,j)<<endl;
+				if(temp.cost<255) cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
+				else cost_image.at<uchar>(temp.x,temp.y) = 254;
+				//cout << (int)cost_image.at<uchar>(i,j)<<endl;
 				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q.push(temp);
 			  }
+			else if(isvalid1(a,i-1,j)&&nearest_obs.at<uchar>(i-1,j)!=new_node.color_code*40&&a.at<uchar>(i-1,j)==0)
+			{
+				voronoi_edges.at<uchar>(i-1,j)=255;
+				Node1 tem=Node1(i-1,j,0,0);
+				main_q2.push(tem);
+			
+			}
+			
 				main_q.pop();
 				if(!main_q.empty())	
 					{

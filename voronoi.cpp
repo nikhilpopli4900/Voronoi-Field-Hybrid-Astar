@@ -5,10 +5,24 @@
 #include"params.hpp"
 #include"bfs.hpp"
 #include"draw_bfs.hpp"
+#include"edge_cost.hpp"
+#define alpha 200.0
 using namespace cv;
 using namespace std;
 #include<queue>
 
+
+Mat calculate_voronoi_values(Mat obs_dist,Mat voronoi_dist){
+	Mat outpu = obs_dist.clone();
+	for(int i=0;i<obs_dist.rows;i++){
+		for(int j=0;j<obs_dist.cols;j++){
+			if(obs_dist.at<uchar>(i,j)!=255){
+				outpu.at<uchar>(i,j) = (int)(255*(1-((alpha/(alpha+obs_dist.at<uchar>(i,j)))*(voronoi_dist.at<uchar>(i,j)*1.0/(voronoi_dist.at<uchar>(i,j)+obs_dist.at<uchar>(i,j)))*((254.0-obs_dist.at<uchar>(i,j))/254.0)*((254.0-obs_dist.at<uchar>(i,j))/254.0))));
+			}
+		}
+	}
+	return outpu;
+}
 
 int main(int argv,char** argc)
 {
@@ -68,10 +82,19 @@ int main(int argv,char** argc)
 	main_bfs(input_border);
 	Mat output(input.rows,input.cols,CV_8UC1,Scalar(0));
 	output=draw_main_bfs(input,input);
+	Mat output2(input.rows,input.cols,CV_8UC1,Scalar(0));
+	output2=draw_main_bfs2(voronoi_edges,voronoi_edges);
+	Mat final = calculate_voronoi_values(cost_image,voronoi_cost_image);
+	namedWindow("Final",WINDOW_NORMAL);
 	imshow("Input",input);
 	imshow("Input with Borders",input_border);
 	imshow("Output",output);
-	imshow("cost_image",cost_image);
+	imshow("obstacle_cost_image",cost_image);
+	imshow("voronoi_cost_image",voronoi_cost_image);
+	imshow("Final",final);
+
+	imshow("voronoi_edges_image",voronoi_edges);
+	imwrite("inpwithbod.jpg",input_border);
 	waitKey(0);
 
 	

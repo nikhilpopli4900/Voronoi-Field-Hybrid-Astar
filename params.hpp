@@ -22,9 +22,12 @@ struct node{
 	int x,y;
 };
 queue <Node1> main_q;
+queue <Node1> main_q2;
 queue <node> myq;
 Node1 new_node=Node1(0,0,0,0);
 Mat cost_image;
+Mat voronoi_cost_image;
+Mat voronoi_edges;
 
 
 #endif
