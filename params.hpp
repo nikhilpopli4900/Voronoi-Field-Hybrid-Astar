@@ -8,20 +8,32 @@ using namespace std;
 #include"opencv2/imgproc/imgproc.hpp"
 using namespace cv;
 
+
+
 struct Node1{
 	int x,y;
-	int color_code; int cost;
+	int color_code; float cost;
 
-	Node1( int x, int y, int color_code,int cost) : x(x),y(y),color_code(color_code), cost(cost)
+	Node1( int x, int y, int color_code,float cost) : x(x),y(y),color_code(color_code), cost(cost)
 	{
 
 	}
 
 };
+
+struct Compare { 
+    bool operator()(Node1 const& p1, Node1 const& p2) 
+    { 
+        // return "true" if "p1" is ordered  
+        // before "p2", for example: 
+        p1.cost > p2.cost; 
+    	
+    } 
+};
 struct node{
 	int x,y;
 };
-queue <Node1> main_q;
+priority_queue<Node1, vector<Node1>, Compare> main_q;
 queue <Node1> main_q2;
 queue <node> myq;
 Node1 new_node=Node1(0,0,0,0);

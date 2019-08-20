@@ -86,22 +86,26 @@ int main(int argv,char** argc)
 	main_bfs(input_border);
 	Mat output(input.rows,input.cols,CV_8UC1,Scalar(0));
 	output=draw_main_bfs(input,input);
+	cout<<"yeah"<<endl;
 	Mat output2(input.rows,input.cols,CV_8UC1,Scalar(0));
+	cout<<"doenm"<<endl;
 	output2=draw_main_bfs2(voronoi_edges,voronoi_edges);
-	namedWindow("Final");
+	cout<<"doenm"<<endl;
+	namedWindow("Final",WINDOW_NORMAL);
 	imshow("Input",input);
 	imshow("Input with Borders",input_border);
 	imshow("Output",output);
 	imshow("obstacle_cost_image",cost_image);
 	imshow("voronoi_cost_image",voronoi_cost_image);
 	imshow("voronoi_edges_image",voronoi_edges);
+	imshow("outp2",output2);
 	imwrite("inpwithbod.jpg",input_border);
 	createTrackbar("Alpha","Final",&alpha,500);
 	createTrackbar("Max Obsacle Distance","Final",&max_obs_dist,500);
 	while(1){
 		Mat final = calculate_voronoi_values(cost_image,voronoi_cost_image);
 		imshow("Final",final);
-		waitKey(10);
+		waitKey(50);
 	}
 
 	

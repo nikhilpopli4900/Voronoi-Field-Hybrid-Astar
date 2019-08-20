@@ -7,7 +7,6 @@
 using namespace cv;
 using namespace std;
 
-
 #include<queue>
 
 void bfs(Mat a, Mat b, int i,int j,int count);
@@ -68,12 +67,29 @@ cout<<count<<"  dg"<<endl;
 void bfs(Mat a,Mat b,int i,int j,int count)
 {	
 	node temp;
-	
+	int l,m;
 	//cout<<count<<"inf"<<endl;
 	while(!myq.empty())
 	{
 			
-			if(isvalid(a,i,j+1)&&b.at<uchar>(i,j+1)==255)
+			for(l=i-1;l<=i+1;l++)
+			{
+				for(m=j-1;m<=j+1;m++)
+				{
+
+					if(isvalid(a,l,m)&&b.at<uchar>(l,m)==255)
+					{
+						b.at<uchar>(l,m)=0;
+						temp.x=l;
+						temp.y=m;
+						new_node=Node1(l,m,count+1,0.0);
+						main_q.push(new_node);
+						myq.push(temp);
+					}
+
+				}
+			}
+			/*if(isvalid(a,i,j+1)&&b.at<uchar>(i,j+1)==255)
 			{
 				b.at<uchar>(i,j+1)=0;
 				temp.x=i;
@@ -114,7 +130,7 @@ void bfs(Mat a,Mat b,int i,int j,int count)
 				main_q.push(new_node);
 				myq.push(temp);
 			  }
-				myq.pop();
+*/				myq.pop();
 				if(!myq.empty())	
 					{temp=myq.front();
 				i=temp.x;j=temp.y;}                                 //check

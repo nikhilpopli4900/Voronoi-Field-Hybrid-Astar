@@ -21,12 +21,30 @@ Mat draw_main_bfs2(Mat a, Mat outp)
 	//voronoi_edges=Mat(a.rows,a.cols,CV_8UC1,Scalar(0));
 	i=new_node.x;
 	j=new_node.y;
+	int l,m;
 
 	while(!main_q2.empty())
 	{
 		//cout<<new_node.color_code<<endl;
 			
-			if(isvalid2(a,i,j+1)&&b.at<uchar>(i,j+1)==0)
+			for(l=i-1;l<=i+1;l++)
+			{
+				for(m=j-1;m<=j+1;m++)
+				{	
+					//cout<<l<<"  "<<m<<endl;
+					if(isvalid2(a,l,m)&&b.at<uchar>(l,m)==0)
+					{
+						b.at<uchar>(l,m)=255;
+						temp=Node1(l,m,new_node.color_code,new_node.cost+1.0+0.414*((l-i+m-j+1)%2));
+						if(temp.cost<255) voronoi_cost_image.at<uchar>(temp.x,temp.y)=(int)temp.cost;
+						else voronoi_cost_image.at<uchar>(temp.x,temp.y) = 254;
+						nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
+						main_q2.push(temp);
+					}
+
+				}
+			}
+			/*if(isvalid2(a,i,j+1)&&b.at<uchar>(i,j+1)==0)
 			{
 				b.at<uchar>(i,j+1)=255;
 				temp.x=i;
@@ -79,7 +97,7 @@ Mat draw_main_bfs2(Mat a, Mat outp)
 				//cout << (int)voronoi_cost_image.at<uchar>(i,j)<<endl;
 				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
 				main_q2.push(temp);
-			  }
+			  }*/
 			
 				main_q2.pop();
 				if(!main_q2.empty())	
