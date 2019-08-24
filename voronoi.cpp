@@ -30,8 +30,10 @@ Mat calculate_voronoi_values(Mat obs_dist,Mat voronoi_dist){
 
 int main(int argv,char** argc)
 {
-	
+//Use this section to get costmap from ROS into input grayscale image
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	Mat input=imread(argc[1],0);
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	Mat input_border(input.rows,input.cols,CV_8UC1,Scalar(0));
 	int i,j;
 	
@@ -47,8 +49,8 @@ int main(int argv,char** argc)
 		}
 	}
 	
-	//To invert the image(comment this section if it is not required to be inverted i.e. if the obstacles are already black)
-//////////////////////////////////////////////////////////////////////////////////////////
+//To invert the image(comment this section if it is not required to be inverted i.e. if the obstacles are already black)
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	/* Mat input_inverted=input.clone();
 	for(i=0;i<input_inverted.rows;i++)
@@ -62,10 +64,10 @@ int main(int argv,char** argc)
 		}
 	}*/
 	
-///////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	
 	// To generate input image which consists of white pixels representing borders of the obstacle objects as input_border the original image
-	for(i=1;i<input.rows-1;i++)
+	 for(i=1;i<input.rows-1;i++)
 	{
 		for(j=1;j<input.cols-1;j++)
 		{	
@@ -80,34 +82,35 @@ int main(int argv,char** argc)
 		}
 	}
 
-
 	Mat output_colored;
 	Mat pushed;
+	common = Mat(input.rows,input.cols,CV_8UC1,Scalar(0));
 	main_bfs(input_border);
-	Mat output(input.rows,input.cols,CV_8UC1,Scalar(0));
-	output=draw_main_bfs(input,input);
-	cout<<"yeah"<<endl;
-	Mat output2(input.rows,input.cols,CV_8UC1,Scalar(0));
-	cout<<"doenm"<<endl;
-	output2=draw_main_bfs2(voronoi_edges,voronoi_edges);
-	cout<<"doenm"<<endl;
-	namedWindow("Final",WINDOW_NORMAL);
+	Mat output_regions(input.rows,input.cols,CV_8UC1,Scalar(0));
+	imshow("common",common);
+	output_regions=find_obstacle_dist(input);
+	find_edge_cost(voronoi_edges);
+	namedWindow("Final",WINDOW_NORMAL);  //To show the results 
+
+//Comment these lines if you don't want the intermediate steps to be printed
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
 	imshow("Input",input);
 	imshow("Input with Borders",input_border);
-	imshow("Output",output);
+	imshow("Output",output_regions);
 	imshow("obstacle_cost_image",cost_image);
 	imshow("voronoi_cost_image",voronoi_cost_image);
 	imshow("voronoi_edges_image",voronoi_edges);
-	imshow("outp2",output2);
-	imwrite("inpwithbod.jpg",input_border);
-	createTrackbar("Alpha","Final",&alpha,500);
-	createTrackbar("Max Obsacle Distance","Final",&max_obs_dist,500);
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////	
+	
+	createTrackbar("Alpha","Final",&alpha,1000);
+	createTrackbar("Max Obsacle Distance","Final",&max_obs_dist,1000);
+	
 	while(1){
 		Mat final = calculate_voronoi_values(cost_image,voronoi_cost_image);
 		imshow("Final",final);
-		waitKey(50);
+		waitKey(10);
 	}
-
+	waitKey(0);
 	
 }
 

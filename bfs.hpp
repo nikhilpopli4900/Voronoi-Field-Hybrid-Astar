@@ -9,139 +9,87 @@ using namespace std;
 
 #include<queue>
 
-void bfs(Mat a, Mat b, int i,int j,int count);
-int isvalid(Mat a,int i, int j);
+void bfs(Mat obstacle_map, Mat occupancy_grid, int i,int j,int count);
+int isvalid(Mat obstacle_map,int i, int j);
 
-void main_bfs(Mat d)
+Node temp_node(0,0,0,0);
+	
+void main_bfs(Mat input_obstacle_map)     //Used to identify individual obstacles and find their edges
 {
-
-
-int l,m;
-
-
-Mat a(d.rows,d.cols,CV_8UC1,Scalar(0));	
-	for(l=0;l<a.rows;l++)
+	int l,m;
+	Mat obstacle_map(input_obstacle_map.rows,input_obstacle_map.cols,CV_8UC1,Scalar(0));	
+	for(l=0;l<obstacle_map.rows;l++)
 	{
-		for(m=0;m<a.cols;m++)
+		for(m=0;m<obstacle_map.cols;m++)
 		{
-			if(d.at<uchar>(l,m)<150)
-				a.at<uchar>(l,m)=0;
+			if(input_obstacle_map.at<uchar>(l,m)<150)
+				obstacle_map.at<uchar>(l,m)=0;
 			else
-				a.at<uchar>(l,m)=255;
-	    }
+				obstacle_map.at<uchar>(l,m)=255;
+		}
 	}
 
+	Mat occupancy_grid=obstacle_map.clone();
+	int i,j,k;
+	node temp;
+	int count=0;
 
-
-Mat b=a.clone();
-int i,j,k;
-node temp;
-int count=0;
-
-for(l=0;l<a.rows-1;l++)
-{
-	for(m=0;m<a.cols-1;m++)
-	{	
-		
-		if(b.at<uchar>(l,m)==255)
-		{
-		    temp.x=l;
-		    temp.y=m;
-		    new_node=Node1(temp.x,temp.y,count+1,0);
-		    //cout<<count<<endl;
-		    //cout<<"aa"<<new_node.color_code<<endl;
-		    main_q.push(new_node);
-		    myq.push(temp);
-		   	b.at<uchar>(l,m)=0;
-			bfs(a,b,l,m,count);
+	for(l=0;l<obstacle_map.rows-1;l++)
+	{
+		for(m=0;m<obstacle_map.cols-1;m++)
+		{	
 			
-			count++; 
-			
+			if(occupancy_grid.at<uchar>(l,m)==255)
+			{
+				temp.x=l;
+				temp.y=m;
+				temp_node=Node(temp.x,temp.y,count+1,0);
+				main_q.push(temp_node);
+				myq.push(temp);
+				occupancy_grid.at<uchar>(l,m)=0;
+				bfs(obstacle_map,occupancy_grid,l,m,count);
+				count++; 
+			}
 		}
 	}
 }
-cout<<count<<"  dg"<<endl;
 
-}
-
-void bfs(Mat a,Mat b,int i,int j,int count)
+void bfs(Mat obstacle_map,Mat occupancy_grid,int i,int j,int count)   //Used to apply bfs to travers whole of the obstacle edge
 {	
 	node temp;
 	int l,m;
-	//cout<<count<<"inf"<<endl;
 	while(!myq.empty())
 	{
-			
-			for(l=i-1;l<=i+1;l++)
+		for(l=i-1;l<=i+1;l++)
+		{
+			for(m=j-1;m<=j+1;m++)
 			{
-				for(m=j-1;m<=j+1;m++)
+				if(isvalid(obstacle_map,l,m)&&occupancy_grid.at<uchar>(l,m)==255)
 				{
-
-					if(isvalid(a,l,m)&&b.at<uchar>(l,m)==255)
-					{
-						b.at<uchar>(l,m)=0;
-						temp.x=l;
-						temp.y=m;
-						new_node=Node1(l,m,count+1,0.0);
-						main_q.push(new_node);
-						myq.push(temp);
-					}
-
+					occupancy_grid.at<uchar>(l,m)=0;
+					common.at<uchar>(l,m)=255;
+					temp.x=l;
+					temp.y=m;
+					temp_node=Node(l,m,count+1,0.0);
+					main_q.push(temp_node);
+					myq.push(temp);
 				}
 			}
-			/*if(isvalid(a,i,j+1)&&b.at<uchar>(i,j+1)==255)
-			{
-				b.at<uchar>(i,j+1)=0;
-				temp.x=i;
-			    temp.y=j+1;
-				new_node=Node1(temp.x,temp.y,count+1,0);
-				//cout<<"aa"<<new_node.color_code<<endl;
-				main_q.push(new_node);
-				myq.push(temp);
-
-			}
-			if (isvalid(a,i+1,j)&&b.at<uchar>(i+1,j)==255)
-			{
-				b.at<uchar>(i+1,j)=0;
-				temp.x=i+1;
-			    temp.y=j;
-				new_node=Node1(temp.x,temp.y,count+1,0);
-				//cout<<"aa"<<new_node.color_code<<endl;
-				main_q.push(new_node);
-				myq.push(temp);	
-			}
-			if(isvalid(a,i,j-1)&&b.at<uchar>(i,j-1)==255)
-			{
-				b.at<uchar>(i,j-1)=0;
-				temp.x=i;
-			    temp.y=j-1;
-				new_node=Node1(temp.x,temp.y,count+1,0);
-				//cout<<"aa"<<new_node.color_code<<endl;
-				main_q.push(new_node);
-				myq.push(temp);   
-			}
-			 if(isvalid(a,i-1,j)&&b.at<uchar>(i-1,j)==255)
-			  {
-				b.at<uchar>(i-1,j)=0;
-				temp.x=i-1;
-			    temp.y=j;
-				new_node=Node1(temp.x,temp.y,count+1,0);
-				//cout<<"aa"<<new_node.color_code<<endl;
-				main_q.push(new_node);
-				myq.push(temp);
-			  }
-*/				myq.pop();
-				if(!myq.empty())	
-					{temp=myq.front();
-				i=temp.x;j=temp.y;}                                 //check
+		}
+		myq.pop();
+		if(!myq.empty())	
+		{
+			temp=myq.front();
+			i=temp.x;j=temp.y;
+		}                                
 	}
 }
 
-int isvalid(Mat a,int x, int y)
+int isvalid(Mat obstacle_map,int x, int y)
 {
-	if(x<0||y<0||x>a.rows-1||y>a.cols-1){
-		
-	 	return 0;
+	if(x<0||y<0||x>obstacle_map.rows-1||y>obstacle_map.cols-1)
+	{
+		return 0;
 	}
 	else return 1;
 }

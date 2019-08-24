@@ -7,114 +7,56 @@
 using namespace cv;
 using namespace std;
 #include<queue>
+#include<math.h>
 
-int isvalid2(Mat a,int i, int j);
+int isvalid2(Mat input,int i, int j);
 
-Mat draw_main_bfs2(Mat a, Mat outp)
-{
-	Node1 temp=Node1(0,0,0,0),new_node=Node1(0,0,0,0);
-	Mat b=a.clone();	
-	new_node=main_q2.front();
+Mat find_edge_cost(Mat input)
+{	
+	Node temp_node=Node(0,0,0,0),current_node=Node(0,0,0,0);
+	Mat occupancy_grid=Mat(input.rows,input.cols,CV_8UC1,Scalar(0));
+	current_node=main_q2.top();
 	int i,j;
-	Mat nearest_obs = outp.clone();
-	voronoi_cost_image=Mat(a.rows,a.cols,CV_8UC1,Scalar(0));
-	//voronoi_edges=Mat(a.rows,a.cols,CV_8UC1,Scalar(0));
-	i=new_node.x;
-	j=new_node.y;
+	voronoi_cost_image = Mat(input.rows,input.cols,CV_8UC1,Scalar(0));
+	i=current_node.x;
+	j=current_node.y;
 	int l,m;
-
 	while(!main_q2.empty())
 	{
-		//cout<<new_node.color_code<<endl;
-			
+			if(!main_q2.empty())	
+			{
+				current_node=main_q2.top();
+				i=current_node.x;j=current_node.y;
+				main_q2.pop();
+				if(occupancy_grid.at<uchar>(i,j)==255) continue;
+				occupancy_grid.at<uchar>(i,j)=255;
+				
+				if(current_node.cost<255) voronoi_cost_image.at<uchar>(i,j)=(int)current_node.cost;
+				else voronoi_cost_image.at<uchar>(i,j) = 254;
+			}    
 			for(l=i-1;l<=i+1;l++)
 			{
 				for(m=j-1;m<=j+1;m++)
 				{	
-					//cout<<l<<"  "<<m<<endl;
-					if(isvalid2(a,l,m)&&b.at<uchar>(l,m)==0)
+					if(isvalid2(input,l,m)&&occupancy_grid.at<uchar>(l,m)==0)
 					{
-						b.at<uchar>(l,m)=255;
-						temp=Node1(l,m,new_node.color_code,new_node.cost+1.0+0.414*((l-i+m-j+1)%2));
-						if(temp.cost<255) voronoi_cost_image.at<uchar>(temp.x,temp.y)=(int)temp.cost;
-						else voronoi_cost_image.at<uchar>(temp.x,temp.y) = 254;
-						nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
-						main_q2.push(temp);
+						temp_node=Node(l,m,current_node.color_code,current_node.cost+1.0+0.414*(abs(l-i+m-j+1)%2));
+						main_q2.push(temp_node);
 					}
 
 				}
 			}
-			/*if(isvalid2(a,i,j+1)&&b.at<uchar>(i,j+1)==0)
-			{
-				b.at<uchar>(i,j+1)=255;
-				temp.x=i;
-			    temp.y=j+1;
-
-				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) voronoi_cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
-				else voronoi_cost_image.at<uchar>(temp.x,temp.y) = 254;
-				//cout << (int)voronoi_cost_image.at<uchar>(i,j)<<endl;
-				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
-				main_q2.push(temp);
-
-			}
 			
-			if (isvalid2(a,i+1,j)&&b.at<uchar>(i+1,j)==0)
-			{
-				b.at<uchar>(i+1,j)=255;
-				temp.x=i+1;
-			    temp.y=j;
-				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) voronoi_cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
-				else voronoi_cost_image.at<uchar>(temp.x,temp.y) = 254;
-				//cout << (int)voronoi_cost_image.at<uchar>(i,j)<<endl;
-				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
-				main_q2.push(temp);	
-			}
-			
-			if(isvalid2(a,i,j-1)&&b.at<uchar>(i,j-1)==0)
-			{
-				b.at<uchar>(i,j-1)=255;
-				temp.x=i;
-			    temp.y=j-1;
-				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) voronoi_cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
-				else voronoi_cost_image.at<uchar>(temp.x,temp.y) = 254;
-				//cout << (int)voronoi_cost_image.at<uchar>(i,j)<<endl;
-				
-				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
-				main_q2.push(temp);   
-			}
-			
-			 if(isvalid2(a,i-1,j)&&b.at<uchar>(i-1,j)==0)
-			  {
-				b.at<uchar>(i-1,j)=255;
-				temp.x=i-1;
-			    temp.y=j;
-				temp=Node1(temp.x,temp.y,new_node.color_code,new_node.cost+1);
-				if(temp.cost<255) voronoi_cost_image.at<uchar>(temp.x,temp.y)=temp.cost;
-				else voronoi_cost_image.at<uchar>(temp.x,temp.y) = 254;
-				//cout << (int)voronoi_cost_image.at<uchar>(i,j)<<endl;
-				nearest_obs.at<uchar>(temp.x,temp.y)=new_node.color_code*40;
-				main_q2.push(temp);
-			  }*/
-			
-				main_q2.pop();
-				if(!main_q2.empty())	
-					{
-						new_node=main_q2.front();
-						i=new_node.x;j=new_node.y;
-					}                                 //check
 	}
-	return nearest_obs;
+	return voronoi_cost_image;
 
 }
 
 
 
-int isvalid2(Mat a,int x, int y)
+int isvalid2(Mat input,int x, int y)
 {
-	if(x<0||y<0||x>a.rows-1||y>a.cols-1){
+	if(x<0||y<0||x>input.rows-1||y>input.cols-1){
 		
 	 	return 0;
 	}
