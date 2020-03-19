@@ -16,7 +16,8 @@ int isvalid1(Mat a,int i, int j);
 Mat draw_main_bfs(Mat a, Mat out)
 {
 	Node1 temp,new_node;
-	Mat b=a.clone();	
+	Mat b=a.clone();
+	int bbbbbb;	
 	new_node=main_q.front;
 	int i,j;
 	i=new_node.x;
