@@ -66,6 +66,7 @@ Mat draw_main_bfs(Mat a, Mat out)
 					{new_node=main_q.front();
 				i=new_node.x;j=new_node.y;}                                 //check
 	}
+	int aaaa;
 	return out;
 
 }
